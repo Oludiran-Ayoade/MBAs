@@ -320,7 +320,15 @@ export default function CourseView({ tag }: { tag: string }) {
                     aria-pressed={n === activeW.n}
                     aria-label={`Week ${n} · ${w.label}`}
                     className={["wk-stop", n === activeW.n ? "on" : "", cnt ? "has" : "", cur?.n === n ? "cur" : ""].filter(Boolean).join(" ")}
-                    onClick={() => setActiveWeek(n)}
+                    onClick={() => {
+                      setActiveWeek(n);
+                      // On mobile the rail sits above the pane - bring the
+                      // newly selected week's pane into view. "nearest" is a
+                      // no-op when the pane is already visible (desktop).
+                      requestAnimationFrame(() =>
+                        document.querySelector(".wk-pane")?.scrollIntoView({ behavior: "smooth", block: "nearest" })
+                      );
+                    }}
                   >
                     <span className="ws-num">W{n}</span>
                     <span className="ws-dates">{w.label}</span>
