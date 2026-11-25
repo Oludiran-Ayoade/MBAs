@@ -758,6 +758,10 @@ html[data-theme="dark"] .notice { background: rgba(217,180,92,0.1); border-color
   .wk-rail-cover { flex: 0 0 auto; align-self: center; white-space: nowrap; margin-bottom: 0; padding: 7px 12px; border: 1px solid var(--line); border-radius: var(--radius-full); background: var(--card); }
   .wk-rail-break { align-self: center; padding: 0 4px; white-space: nowrap; }
   .upload-card { padding: 24px; }
+  /* Week pane head: title stays one line, dates drop below instead of wrapping per-word */
+  .wp-titles { flex-wrap: wrap; row-gap: 2px; }
+  .wp-titles b { white-space: nowrap; font-size: var(--text-base); }
+  .wp-dates { flex: 1 0 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .tl-item .date { min-width: 92px; font-size: var(--text-xs); }
   .reader h1 { font-size: var(--text-xl); }
 }

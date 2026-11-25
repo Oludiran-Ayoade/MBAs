@@ -66,7 +66,7 @@ export default function SearchBox() {
     if (query.length < 2) { setResults(null); setOpen(false); return; }
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(async () => {
-      const idx = staticIndex().concat(await uploadIndex());
+      const idx = staticIndex().concat(await uploadIndex().catch(() => []));
       setResults(idx.filter(i => i.hay.includes(query)));
       setOpen(true);
     }, 180);

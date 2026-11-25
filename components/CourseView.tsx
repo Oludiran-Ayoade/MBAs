@@ -48,7 +48,9 @@ export default function CourseView({ tag }: { tag: string }) {
     ])
       .then(([a, b]) => {
         if (a === null && b === null) { setError(true); setLoading(false); return; }
-        const all = [...(a || []), ...(b || [])];
+        // Newest first so week buckets match upload-time order (addRes prepends).
+        const all = [...(a || []), ...(b || [])]
+          .sort((x, y) => (y.created_at || "").localeCompare(x.created_at || ""));
         const map = new Map<number | null, CloudResource[]>();
         const pqs: CloudResource[] = [];
         const lqs: CloudResource[] = [];
@@ -98,7 +100,7 @@ export default function CourseView({ tag }: { tag: string }) {
   // Add a resource to the week bucket it belongs to (after inline upload).
   function addRes(r: CloudResource) {
     const w = weekOfResource(r);
-    setPdfs(m => { const n = new Map(m); n.set(w, [...(n.get(w) || []), r]); return n; });
+    setPdfs(m => { const n = new Map(m); n.set(w, [r, ...(n.get(w) || [])]); return n; });
   }
 
   // Remove a resource from whichever list holds it
