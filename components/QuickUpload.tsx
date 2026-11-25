@@ -11,26 +11,29 @@ interface Item { id: number; name: string; size: number; pct: number; status: St
 let nextId = 1;
 const OK_EXT = /\.(pdf|pptx?|docx?|png|jpe?g)$/i;
 
-// Compact inline uploader for the Past Questions / Likely Questions sections —
-// files go straight to Cloudinary on select or drop, no page navigation.
-export default function QuickUpload({ kind, courseTag, existing, onUploaded }: {
-  kind: "pq" | "lq";
+// Compact inline uploader — Past Questions, Likely Questions or a lecture
+// week. Files go straight to Cloudinary on select or drop, no page navigation.
+export default function QuickUpload({ kind, week, courseTag, existing, onUploaded, compact }: {
+  kind: "pq" | "lq" | "week";
+  week?: number;
   courseTag: string;
   existing: Set<string>;
   onUploaded: (r: CloudResource) => void;
+  compact?: boolean;
 }) {
   const [items, setItems] = useState<Item[]>([]);
   const [drag, setDrag] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const inFlight = useRef<Set<string>>(new Set());
-  const folder = `mba-notes/${courseTag}/${kind === "pq" ? "past-questions" : "likely-questions"}`;
+  const tagKind = kind === "week" ? `w${week}` : kind;
+  const folder = kind === "week" ? `mba-notes/${courseTag}/w${week}` : `mba-notes/${courseTag}/${kind === "pq" ? "past-questions" : "likely-questions"}`;
 
   function uploadOne(item: Item, file: File) {
     return new Promise<CloudResource | null>(resolve => {
       const fd = new FormData();
       fd.append("file", file);
       fd.append("upload_preset", CONFIG.UPLOAD_PRESET);
-      fd.append("tags", `mba,${courseTag},${kind}`);
+      fd.append("tags", `mba,${courseTag},${tagKind}`);
       fd.append("folder", folder);
 
       const xhr = new XMLHttpRequest();
@@ -97,7 +100,7 @@ export default function QuickUpload({ kind, courseTag, existing, onUploaded }: {
   return (
     <div className="qu">
       <div
-        className={`qu-zone${drag ? " drag" : ""}`}
+        className={`qu-zone${drag ? " drag" : ""}${compact ? " compact" : ""}`}
         role="button"
         tabIndex={0}
         onClick={() => inputRef.current?.click()}
@@ -106,9 +109,9 @@ export default function QuickUpload({ kind, courseTag, existing, onUploaded }: {
         onDragLeave={() => setDrag(false)}
         onDrop={e => { e.preventDefault(); setDrag(false); addFiles(Array.from(e.dataTransfer.files)); }}
       >
-        <span className="qu-ic"><UploadSimple size={22} /></span>
-        Drop files here or <b>click to upload</b>
-        <small>{kind === "pq" ? "goes straight to Past Questions" : "goes straight to Likely & Tutorial Questions"}</small>
+        <span className="qu-ic"><UploadSimple size={compact ? 15 : 22} /></span>
+        Drop files {compact ? "or" : "here or"} <b>click to upload</b>
+        <small>{kind === "week" ? `goes straight to Week ${week}` : kind === "pq" ? "goes straight to Past Questions" : "goes straight to Likely & Tutorial Questions"}</small>
       </div>
       <input
         ref={inputRef}

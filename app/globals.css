@@ -1217,3 +1217,36 @@ html[data-theme="dark"] .course-hero-frame {
   .foot-cell { border-left: none; border-top: 1px solid rgba(255,255,255,0.14); padding: 12px 0 0; }
   .foot-cell:first-child { border-top: none; padding-top: 0; }
 }
+
+/* ---- Binder pass: week rail coverage + pane dropzone + exam grid ---- */
+.wk-rail-cover {
+  font-size: var(--text-xs); color: var(--muted); font-weight: 600;
+  padding: 2px 12px 9px; font-variant-numeric: tabular-nums;
+  border-bottom: 1px solid var(--line); margin-bottom: 8px;
+}
+
+.qu-zone.compact {
+  flex-direction: row; gap: 9px; justify-content: center;
+  padding: 10px 14px; margin-top: 14px; font-size: var(--text-xs);
+}
+.qu-zone.compact small { display: none; }
+.wk-empty .qu { margin-top: 12px; width: 100%; max-width: 420px; }
+
+.exam-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.exam-col { min-width: 0; scroll-margin-top: 84px; }
+.exam-col + .exam-col { border-left: 1px solid var(--line); padding-left: 30px; }
+.exam-sub {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-weight: 800; font-size: var(--text-base);
+  letter-spacing: -0.02em; color: var(--ink); margin-bottom: 12px;
+}
+.exam-col.lq .exam-sub { color: #7c3aed; }
+.exam-none { color: var(--muted); font-size: var(--text-sm); padding: 16px 0; }
+.exam-col.lq .qu-zone { border-color: color-mix(in srgb, var(--purple) 35%, var(--line)); background: color-mix(in srgb, var(--purple) 4%, var(--card)); }
+.exam-col.lq .qu-zone b { color: var(--purple); }
+.exam-col.lq .qu-zone:hover, .exam-col.lq .qu-zone.drag { border-color: var(--purple); background: color-mix(in srgb, var(--purple) 8%, var(--card)); }
+
+@media (max-width: 768px) {
+  .exam-cols { grid-template-columns: 1fr; gap: 0; }
+  .exam-col + .exam-col { border-left: none; border-top: 1px solid var(--line); padding: 24px 0 0; margin-top: 24px; }
+}

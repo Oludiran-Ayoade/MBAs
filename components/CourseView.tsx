@@ -12,7 +12,7 @@ import { CONFIG, cloudinaryConfigured } from "@/lib/config";
 import QuickUpload from "@/components/QuickUpload";
 import Reveal from "@/components/Reveal";
 import {
-  BookOpenText, Check, CheckSquare, DownloadSimple, Eye, FolderOpen,
+  BookOpenText, Check, CheckSquare, DownloadSimple, Exam, Eye, FolderOpen,
   MagnifyingGlass, Notebook, Plus, Target, Trash
 } from "@/components/Icons";
 import { CourseIcon, FileIcon } from "@/components/Icons";
@@ -94,6 +94,12 @@ export default function CourseView({ tag }: { tag: string }) {
     onHash(); // handle a hash present on initial load (no ?w= param)
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
+
+  // Add a resource to the week bucket it belongs to (after inline upload).
+  function addRes(r: CloudResource) {
+    const w = weekOfResource(r);
+    setPdfs(m => { const n = new Map(m); n.set(w, [...(n.get(w) || []), r]); return n; });
+  }
 
   // Remove a resource from whichever list holds it
   function removeRes(r: CloudResource) {
@@ -288,20 +294,6 @@ export default function CourseView({ tag }: { tag: string }) {
       <main className="wrap">
         <div className="breadcrumb"><Link href="/">← All courses</Link></div>
 
-        <div className="coverage">
-          {lectWeeks.map(w => {
-            const has = course.notes.some(n => n.week === w.n) || (pdfs.get(w.n) || []).length > 0;
-            const cls = ["cov-dot", has ? "has" : "", cur?.n === w.n ? "now" : ""].filter(Boolean).join(" ");
-            return (
-              <a key={w.n} className={cls} style={{ ["--accent" as string]: course.color }}
-                 href={`#w${w.n}`} title={`Week ${w.n} · ${w.label}${has ? " · has notes" : ""}`}>
-                {w.n}
-              </a>
-            );
-          })}
-          <span className="cov-label">{covered}/{lectWeeks.length} weeks covered</span>
-        </div>
-
         {error && <div className="notice">Couldn't load shared notes. Check your connection and refresh.</div>}
 
         {cloudinaryConfigured && (
@@ -315,6 +307,7 @@ export default function CourseView({ tag }: { tag: string }) {
         <Reveal>
         <div className="wk-md" style={{ margin: "20px 0 50px", ["--accent" as string]: course.color }}>
           <div className="wk-rail" role="group" aria-label="Lecture weeks">
+            <div className="wk-rail-cover">{covered}/{lectWeeks.length} weeks covered</div>
             {lectWeeks.map((w, i) => {
               const n = w.n!;
               const cnt = weekCount(n);
@@ -364,13 +357,12 @@ export default function CourseView({ tag }: { tag: string }) {
                     </Link>
                   ))}
                   {activeFiles.map(uploadRow)}
+                  <QuickUpload kind="week" week={activeW.n!} courseTag={course.tag} existing={existingKeys} compact onUploaded={addRes} />
                 </>
               ) : (
                 <div className="wk-empty">
                   <span>Nothing uploaded yet</span>
-                  <Link className="wk-add" href={`/upload?c=${course.tag}&w=${activeW.n}`}>
-                    <span className="wk-add-plus" aria-hidden><Plus size={11} weight="bold" /></span> Add this week's note
-                  </Link>
+                  <QuickUpload kind="week" week={activeW.n!} courseTag={course.tag} existing={existingKeys} onUploaded={addRes} />
                 </div>
               )}
             </div>
@@ -390,47 +382,38 @@ export default function CourseView({ tag }: { tag: string }) {
           </section>
         )}
 
-        {/* Past Questions section */}
-        <Reveal><section className="pq-section" id="past-questions">
+        {/* Exam Prep: Past Questions + Likely Questions in one card */}
+        <Reveal>
+        <section className="pq-section" id="exam-prep">
           <div className="pq-head">
-            <h2 className="pq-title"><Notebook size={20} /> Past Questions</h2>
+            <h2 className="pq-title"><Exam size={20} /> Exam Prep</h2>
           </div>
-
-          {pastQs.length === 0 ? (
-            loading ? <div className="pq-list"><SkelRows count={2} /></div> :
-            <div className="empty-state pq-empty">
-              <div className="big"><Notebook size={38} weight="duotone" /></div>
-              No past questions uploaded for {course.code} yet. Be the first.
+          <div className="exam-cols">
+            <div className="exam-col" id="past-questions">
+              <h3 className="exam-sub"><Notebook size={17} /> Past Questions</h3>
+              {pastQs.length === 0 ? (
+                loading ? <div className="pq-list"><SkelRows count={2} /></div> :
+                <p className="exam-none">Nothing shared for {course.code} yet. Be the first.</p>
+              ) : (
+                <div className="pq-list">{pastQs.map(uploadRow)}</div>
+              )}
+              <QuickUpload kind="pq" courseTag={course.tag} existing={existingKeys}
+                onUploaded={r => setPastQs(a => [r, ...a])} />
             </div>
-          ) : (
-            <div className="pq-list">
-              {pastQs.map(uploadRow)}
+            <div className="exam-col lq" id="likely-questions">
+              <h3 className="exam-sub"><Target size={17} /> Likely &amp; Tutorial Questions</h3>
+              {likelyQs.length === 0 ? (
+                loading ? <div className="pq-list"><SkelRows count={2} /></div> :
+                <p className="exam-none">Nothing shared for {course.code} yet. Be the first.</p>
+              ) : (
+                <div className="pq-list">{likelyQs.map(uploadRow)}</div>
+              )}
+              <QuickUpload kind="lq" courseTag={course.tag} existing={existingKeys}
+                onUploaded={r => setLikelyQs(a => [r, ...a])} />
             </div>
-          )}
-          <QuickUpload kind="pq" courseTag={course.tag} existing={existingKeys}
-            onUploaded={r => setPastQs(a => [r, ...a])} />
-        </section></Reveal>
-
-        {/* Likely Exam Questions section */}
-        <Reveal><section className="pq-section lq-section" id="likely-questions">
-          <div className="pq-head">
-            <h2 className="pq-title"><Target size={20} /> Likely &amp; Tutorial Questions</h2>
           </div>
-
-          {likelyQs.length === 0 ? (
-            loading ? <div className="pq-list"><SkelRows count={2} /></div> :
-            <div className="empty-state pq-empty">
-              <div className="big"><Target size={38} weight="duotone" /></div>
-              No likely or tutorial questions shared for {course.code} yet. Be the first.
-            </div>
-          ) : (
-            <div className="pq-list">
-              {likelyQs.map(uploadRow)}
-            </div>
-          )}
-          <QuickUpload kind="lq" courseTag={course.tag} existing={existingKeys}
-            onUploaded={r => setLikelyQs(a => [r, ...a])} />
-        </section></Reveal>
+        </section>
+        </Reveal>
 
         {managing && selected.size > 0 && (
           <div className="del-bar">
