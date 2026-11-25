@@ -1,0 +1,527 @@
+/* ============================================================
+   Concept previews — scoped token overrides
+   These wrap page content only; site chrome (header/footer)
+   stays default. Routes: /preview/vault /preview/reading-room
+   /preview/semester-map
+   ============================================================ */
+
+/* ---------- Shared concept scaffold ---------- */
+.concept {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+}
+.concept .back-link {
+  display: inline-block;
+  font-size: var(--text-xs);
+  color: var(--muted);
+  padding: 14px 0 0;
+}
+.concept .back-link:hover { color: var(--accent, var(--blue)); text-decoration: none; }
+.concept-tag {
+  display: inline-block;
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent, var(--blue));
+  border: 1px solid color-mix(in srgb, var(--accent, var(--blue)) 40%, transparent);
+  border-radius: var(--radius-full);
+  padding: 3px 10px; margin-bottom: 10px;
+}
+
+/* ============================================================
+   A — THE VAULT · dark cinematic
+   ============================================================ */
+.concept-vault {
+  --bg: #070b14;
+  --card: #0e1626;
+  --ink: #eef3fa;
+  --muted: #93a3bb;
+  --line: #1c2940;
+  --navy: #070b14;
+  --blue: #5aa9e6;
+  --cyan: #4fd1e8;
+  --magenta: #e85aa0;
+  --magenta-hover: #f07ab5;
+  --green: #4fd2a0;
+  --purple: #a88cf6;
+  --accent: var(--cyan);
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-2: 0 2px 6px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.45);
+  --shadow-3: 0 12px 28px rgba(0,0,0,0.5), 0 28px 60px rgba(0,0,0,0.55);
+}
+.concept-vault .hero {
+  background:
+    radial-gradient(ellipse 50% 60% at 50% 0%, rgba(79,209,232,0.16), transparent 70%),
+    linear-gradient(180deg, #05070d, #070b14);
+  padding: 90px 22px 80px;
+}
+.concept-vault .hero h1 em { color: var(--cyan); }
+.concept-vault .hero .kicker {
+  background: rgba(79,209,232,0.08);
+  border-color: rgba(79,209,232,0.25);
+  color: #8fd8e8;
+}
+.concept-vault .search-input {
+  background: rgba(14,22,38,0.9);
+  border-color: #22304a;
+}
+.concept-vault .search-input:focus {
+  border-color: var(--cyan);
+  background: #0e1626;
+  box-shadow: 0 0 0 3px rgba(79,209,232,0.15), 0 0 24px rgba(79,209,232,0.12);
+}
+.concept-vault .search-wrap .s-icon { filter: grayscale(1) brightness(1.6); }
+.concept-vault .sem-progress .sp-track { background: #1c2940; }
+.concept-vault .sp-label { color: #6b7d96 !important; }
+.concept-vault .wk-card {
+  background: #0e1626;
+  border-color: #1c2940;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset;
+}
+.concept-vault .wk-card:hover {
+  border-color: var(--accent, var(--cyan));
+  box-shadow: 0 0 20px color-mix(in srgb, var(--accent, var(--cyan)) 25%, transparent), var(--shadow-2);
+  transform: translateY(-3px);
+}
+.concept-vault .wk-card.wk-cur {
+  box-shadow: 0 0 0 2px var(--cyan), 0 0 24px rgba(79,209,232,0.3);
+}
+.concept-vault .wk-card-n { color: #eef3fa; }
+.concept-vault .wk-card-d { color: #6b7d96; }
+.concept-vault .shelf-row::-webkit-scrollbar-thumb { background: #22304a; }
+.concept-vault .tt-plus { color: #44557333; }
+.concept-vault .tt-chip-page { background: rgba(79,209,232,0.15); color: var(--cyan); }
+.concept-vault .tt-chip-pdf { background: rgba(232,90,160,0.15); color: var(--magenta); }
+.concept-vault .btn-outline { background: transparent; color: var(--cyan); border-color: #22304a; }
+.concept-vault .shelf-name { color: #6b7d96; }
+.concept-vault .section-title { color: #eef3fa; }
+.concept-vault .tl-item .label { color: var(--ink); }
+.concept-vault .shelf-cover { color: #6b7d96; }
+.concept-vault .tt-legend { color: #55657e; }
+.concept-vault #calendar { background: #0a101f; border-block-color: #1c2940; }
+
+/* ============================================================
+   B — THE READING ROOM · warm paper, editorial
+   ============================================================ */
+.concept-reading {
+  --bg: #f4efe4;
+  --card: #fcf9f1;
+  --ink: #2b2118;
+  --muted: #7d6f5d;
+  --line: #e0d5be;
+  --navy: #3a2f22;
+  --blue: #7a3b2e;
+  --cyan: #8a5a2e;
+  --magenta: #7a3b2e;
+  --magenta-hover: #93493a;
+  --green: #4a6b3f;
+  --purple: #6b4f8f;
+  --accent: #7a3b2e;
+  --shadow-1: 0 1px 2px rgba(60,45,25,0.05), 0 2px 6px rgba(60,45,25,0.06);
+  --shadow-2: 0 2px 6px rgba(60,45,25,0.07), 0 8px 20px rgba(60,45,25,0.09);
+  --shadow-3: 0 8px 20px rgba(60,45,25,0.1), 0 24px 50px rgba(60,45,25,0.14);
+}
+.concept-reading .hero {
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 20%, rgba(122,59,46,0.10), transparent),
+    radial-gradient(ellipse 50% 60% at 80% 80%, rgba(138,90,46,0.08), transparent),
+    linear-gradient(150deg, #efe7d5, #f4efe4);
+  color: var(--ink);
+}
+.concept-reading .hero .kicker {
+  background: transparent;
+  border-color: #c9b891;
+  color: #8a6f3f;
+}
+.concept-reading .hero h1 { color: var(--ink); }
+.concept-reading .hero h1 em { color: #7a3b2e; }
+.concept-reading .hero p { color: var(--muted); }
+.concept-reading .search-input {
+  background: var(--card);
+  border-color: #d8cab0;
+  color: var(--ink);
+}
+.concept-reading .search-input::placeholder { color: #b3a488; }
+.concept-reading .search-input:focus {
+  border-color: #7a3b2e;
+  box-shadow: 0 0 0 3px rgba(122,59,46,0.12);
+}
+.concept-reading .search-wrap .s-icon { filter: sepia(0.5); }
+.concept-reading .sem-progress .sp-track { background: #e0d5be; }
+.concept-reading .sem-progress .sp-fill { background: linear-gradient(90deg, #8a5a2e, #7a3b2e); }
+.concept-reading .sem-progress .sp-label { color: #7d6f5d !important; }
+
+/* Shelf = literal shelf line under each row */
+.concept-reading .shelf-row {
+  border-bottom: 4px solid #d8ccb0;
+  padding-bottom: 14px;
+}
+.concept-reading .shelf-title { color: var(--ink); }
+.concept-reading .shelf-title:hover { color: #7a3b2e; }
+.concept-reading .shelf-name { color: #a08f74; }
+.concept-reading .shelf-cover { color: #a08f74; }
+
+/* Week cards → book spines */
+.concept-reading .wk-card {
+  border-top: none;
+  border-left: 5px solid var(--accent, #7a3b2e);
+  border-radius: 2px 6px 6px 2px;
+  background: linear-gradient(90deg, #f8f3e6, var(--card));
+  box-shadow: var(--shadow-1);
+}
+.concept-reading .wk-card:hover {
+  transform: translateY(-4px);
+  border-color: #c9b891;
+  border-left-color: var(--accent, #7a3b2e);
+  box-shadow: var(--shadow-2);
+}
+.concept-reading .wk-card-n { color: var(--ink); font-family: var(--font-display); }
+.concept-reading .wk-card-d { color: #a08f74; }
+.concept-reading .wk-card.wk-cur {
+  box-shadow: 0 0 0 2px #8a5a2e, var(--shadow-2);
+}
+.concept-reading .tt-plus { color: #b8a887; }
+.concept-reading .wk-card:hover .tt-plus { color: #7a3b2e; }
+.concept-reading .tt-chip-page { background: rgba(138,90,46,0.14); color: #8a5a2e; }
+.concept-reading .tt-chip-pdf { background: rgba(122,59,46,0.12); color: #7a3b2e; }
+.concept-reading .wk-card-pq { border-left-color: #7a3b2e; border-color: #c9b891; }
+.concept-reading .wk-card-pq .wk-card-n { color: #7a3b2e; }
+.concept-reading .btn-outline { background: var(--card); color: var(--ink); border-color: #d8cab0; }
+.concept-reading .btn-primary { background: #7a3b2e; box-shadow: 0 4px 14px rgba(122,59,46,0.3); }
+.concept-reading .btn-primary:hover { background: #93493a; }
+.concept-reading .section-title { color: var(--ink); }
+.concept-reading .section-sub { color: var(--muted); }
+.concept-reading #calendar { background: var(--card); border-block-color: var(--line); }
+.concept-reading .tl-item .label { color: var(--ink); }
+.concept-reading .tl-start { --tl: #7a3b2e; }
+.concept-reading .tt-legend { color: #a08f74; }
+.concept-reading .wk-pop { border-color: #d8cab0; }
+.concept-reading .notice { background: #f7ecd8; border-color: #d8bf8f; color: #6b5320; }
+
+/* ============================================================
+   C — THE SEMESTER MAP · spatial ribbon + dashboard stats
+   ============================================================ */
+.concept-map {
+  --bg: #eef2f8;
+  --card: #ffffff;
+  --ink: #16232e;
+  --muted: #57687a;
+  --line: #d8e2ee;
+  --navy: #0c2340;
+  --blue: #2378cc;
+  --cyan: #0f9bc4;
+  --magenta: #c2187b;
+  --magenta-hover: #d43285;
+  --accent: var(--blue);
+}
+.concept-map .hero {
+  background:
+    radial-gradient(ellipse 55% 45% at 25% 20%, rgba(15,155,196,0.25), transparent),
+    radial-gradient(ellipse 45% 55% at 80% 80%, rgba(194,24,123,0.18), transparent),
+    linear-gradient(135deg, #0c2340, #163a63 60%, #0b6fa4);
+  padding-bottom: 40px;
+}
+.concept-map .hero h1 em { color: #7fd4f0; }
+
+/* Semester ribbon */
+.sem-ribbon {
+  max-width: 1120px; margin: -24px auto 0; padding: 0 22px 10px;
+}
+.sr-card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-2);
+  padding: 22px 24px;
+}
+.sr-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; }
+.sr-title { font-family: var(--font-display); font-weight: 700; font-size: var(--text-lg); color: var(--ink); }
+.sr-now { font-size: var(--text-xs); color: var(--muted); font-variant-numeric: tabular-nums; }
+.sr-track { display: flex; align-items: flex-start; gap: 0; overflow-x: auto; padding: 6px 2px 14px; }
+.sr-stop { display: flex; flex-direction: column; align-items: center; min-width: 56px; position: relative; }
+.sr-dot {
+  width: 22px; height: 22px; border-radius: var(--radius-full);
+  border: 2px solid var(--line); background: var(--card);
+  display: grid; place-items: center;
+  font-size: 0.56rem; font-weight: 800; color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.sr-stop.past .sr-dot { background: var(--green); border-color: var(--green); color: #fff; }
+.sr-stop.now .sr-dot {
+  width: 28px; height: 28px;
+  background: var(--cyan); border-color: var(--cyan); color: #fff;
+  box-shadow: 0 0 0 4px rgba(15,155,196,0.2);
+  font-size: 0.62rem;
+}
+.sr-stop .sr-wk { font-size: 0.56rem; color: var(--muted); margin-top: 6px; white-space: nowrap; }
+.sr-stop.now .sr-wk { color: var(--cyan); font-weight: 700; }
+.sr-line { flex: 1; height: 2px; background: var(--line); margin-top: 11px; min-width: 14px; }
+.sr-line.past { background: var(--green); }
+.sr-gap {
+  flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;
+  margin-top: 2px; padding: 0 6px; min-width: 56px;
+}
+.sr-gap-line { height: 2px; width: 100%; background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px); }
+.sr-gap-label { font-size: 0.52rem; color: var(--muted); margin-top: 14px; white-space: nowrap; }
+.sr-months { display: flex; margin-top: 8px; }
+.sr-month { font-size: 0.56rem; color: var(--muted); letter-spacing: 0.05em; }
+
+/* Shelf headers get mini stat chips */
+.concept-map .shelf-cover {
+  background: rgba(35,120,204,0.08); color: var(--blue);
+  border-radius: var(--radius-full); padding: 3px 10px; font-weight: 700;
+}
+.concept-map .wk-card { border-radius: var(--radius); }
+
+/* ============================================================
+   D — THE SYLLABUS · heavy grotesk, one accent, icon-driven
+   design-taste pass: no Fraunces, one font family, one accent,
+   Phosphor icons instead of emoji, no em-dashes in copy.
+   Hero read: wordmark-weight headline (B) inside a framed brand
+   field (D), search as the functional task (H). Dials 8/5/4.
+   ============================================================ */
+.concept-syllabus {
+  --bg: #f2f5fa;
+  --card: #ffffff;
+  --ink: #141e2b;
+  --muted: #58687b;
+  --line: #dfe7f1;
+  --navy: #0c2340;
+  --accent: #2f8fe0;
+  --accent-deep: #1d66ac;
+  --accent-soft: #8ac7f8;
+  --blue: var(--accent);
+  --font-display: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  --shadow-1: 0 1px 2px rgba(12,35,64,.05), 0 2px 6px rgba(12,35,64,.05);
+  --shadow-2: 0 4px 12px rgba(12,35,64,.08), 0 14px 34px rgba(12,35,64,.09);
+  --shadow-3: 0 10px 24px rgba(12,35,64,.1), 0 30px 64px rgba(12,35,64,.12);
+}
+
+/* Hero — framed brand field, wordmark-heavy type, fine-line atmosphere */
+.concept-syllabus .hero {
+  margin: 12px;
+  border-radius: 28px;
+  position: relative;
+  background:
+    radial-gradient(ellipse 70% 90% at 90% 8%, rgba(47,143,224,0.45), transparent 60%),
+    radial-gradient(ellipse 45% 55% at 8% 95%, rgba(29,102,172,0.35), transparent 65%),
+    linear-gradient(155deg, #081a30 0%, #0c2340 55%, #0f2c50 100%);
+  padding: 58px 22px 50px;
+  text-align: left;
+  overflow: hidden;
+}
+/* fine-line atmosphere — texture, not decoration */
+.concept-syllabus .hero::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.028) 0 1px, transparent 1px 88px),
+    radial-gradient(ellipse 120% 80% at 50% 110%, rgba(4,12,24,0.55), transparent 60%);
+}
+.concept-syllabus .hero .wrap { position: relative; z-index: 1; }
+.concept-syllabus .hero h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 7.4vw, 5.6rem);
+  letter-spacing: -0.045em;
+  line-height: 0.96;
+  max-width: 13ch;
+}
+.concept-syllabus .hero h1 strong {
+  font-weight: 800; color: var(--accent-soft); display: block;
+}
+.concept-syllabus .hero p {
+  max-width: 44ch; font-size: 1.04rem; line-height: 1.65; margin: 22px 0 0;
+  color: #b7c9dd; font-weight: 500;
+}
+.concept-syllabus .hero .actions { justify-content: flex-start; gap: 12px; margin-top: 30px; }
+.concept-syllabus .hero .kicker {
+  background: rgba(138,199,248,0.1); border-color: rgba(138,199,248,0.35); color: var(--accent-soft);
+  letter-spacing: 0.16em;
+}
+
+/* Entry motion — motivated: eye goes headline → task → rest.
+   transform + opacity only, killed under reduced motion. */
+@keyframes syRise {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .concept-syllabus .sy-in { animation: syRise .9s cubic-bezier(.16,1,.3,1) both; }
+  .concept-syllabus .sy-in-1 { animation-delay: .05s; }
+  .concept-syllabus .sy-in-2 { animation-delay: .15s; }
+  .concept-syllabus .sy-in-3 { animation-delay: .26s; }
+  .concept-syllabus .sy-in-4 { animation-delay: .36s; }
+  .concept-syllabus .sy-in-5 { animation-delay: .46s; }
+}
+
+/* Functional hero — the search IS the task: raised white panel,
+   58px tap target, Phosphor icon swapped for the emoji. */
+.sy-search { position: relative; }
+.sy-search > svg {
+  position: absolute; left: 21px; top: 29px; transform: translateY(-50%);
+  color: var(--accent); z-index: 2; pointer-events: none;
+}
+.concept-syllabus .search-wrap { max-width: 580px; margin: 32px 0 0; }
+.concept-syllabus .search-wrap .s-icon { display: none; }
+.concept-syllabus .search-input {
+  background: #fff; border: 1px solid transparent; border-radius: 15px;
+  color: var(--ink); min-height: 58px; padding-left: 54px; font-weight: 600;
+  box-shadow: 0 16px 40px rgba(2,10,24,0.45);
+}
+.concept-syllabus .search-input::placeholder { color: #8a99ac; font-weight: 500; }
+.concept-syllabus .search-input:focus {
+  border-color: var(--accent); background: #fff;
+  box-shadow: 0 16px 40px rgba(2,10,24,0.45), 0 0 0 4px rgba(47,143,224,0.25);
+}
+.concept-syllabus .search-results { color: var(--ink); }
+
+/* Proof strip — small, bottom edge, real facts only */
+.sy-proof {
+  display: flex; flex-wrap: wrap; gap: 0; margin-top: 40px;
+  font-size: 0.8rem; font-weight: 600; letter-spacing: 0.02em; color: #9cb4cf;
+}
+.sy-proof span { padding: 2px 24px; border-left: 1px solid rgba(255,255,255,0.16); }
+.sy-proof span:first-child { padding-left: 0; border-left: none; }
+.sy-proof b { color: #fff; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+/* Course-code marquee — the one kinetic strip on the page */
+.sy-marquee {
+  overflow: hidden; border-block: 1px solid var(--line);
+  background: var(--card); padding: 13px 0; margin-top: 12px;
+}
+.sy-mq-track {
+  display: flex; align-items: center; gap: 44px; width: max-content;
+  animation: syMq 34s linear infinite;
+}
+.sy-mq-track:hover { animation-play-state: paused; }
+.sy-mq-track span {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-display); font-weight: 800; font-size: 0.82rem;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+  white-space: nowrap;
+}
+.sy-mq-track span i { color: var(--accent); font-style: normal; }
+@keyframes syMq { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .sy-mq-track { animation: none; }
+}
+
+/* Buttons — one filled pill, one ghost; accent locked */
+.concept-syllabus .btn-primary {
+  background: var(--accent); box-shadow: 0 6px 18px rgba(47,143,224,0.4);
+  font-weight: 800;
+}
+.concept-syllabus .btn-primary:hover { background: var(--accent-deep); }
+.concept-syllabus .btn-ghost {
+  background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #d7e6f5;
+}
+.concept-syllabus .btn-ghost:hover { border-color: rgba(255,255,255,0.65); color: #fff; }
+.concept-syllabus .btn-outline { border-color: var(--line); color: var(--accent); background: var(--card); }
+
+/* Big stat band — display-size numerals, hairline columns */
+.sy-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  margin: 22px 0 0; border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: var(--card); overflow: hidden;
+}
+.sy-stat { padding: 30px 28px 26px; border-left: 1px solid var(--line); }
+.sy-stat:first-child { border-left: none; }
+.sy-stat b {
+  display: block; font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: -0.04em; line-height: 1;
+  color: var(--ink); font-variant-numeric: tabular-nums;
+}
+.sy-stat b em { font-style: normal; color: var(--accent); }
+.sy-stat span {
+  display: block; margin-top: 8px; font-size: 0.78rem; font-weight: 600;
+  color: var(--muted); letter-spacing: 0.02em;
+}
+
+/* Section rhythm — density 4, titles in the grotesk */
+.concept-syllabus .section { padding: 72px 0; }
+.concept-syllabus .section-title {
+  letter-spacing: -0.03em; font-size: var(--text-2xl); font-weight: 800;
+}
+.concept-syllabus .section-sub { max-width: 58ch; }
+.sy-section-ic { color: var(--accent); margin-right: 9px; vertical-align: -3px; }
+
+/* File rows, rebuilt — icon tile + name + icon-button actions */
+.sy-card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-1); overflow: hidden;
+}
+.sy-file { display: flex; align-items: center; gap: 14px; padding: 15px 18px; border-bottom: 1px solid var(--line); transition: background var(--motion-fast); }
+.sy-file:hover { background: #f7fafe; }
+.sy-file:last-child { border-bottom: none; }
+.sy-file .f-ic {
+  width: 40px; height: 40px; flex: none; border-radius: 11px;
+  display: grid; place-items: center;
+  background: rgba(47,143,224,0.1); color: var(--accent);
+}
+.sy-file .f-ic.alt { background: rgba(46,139,106,0.1); color: #2e8b6a; }
+.sy-file .f-name { flex: 1; min-width: 0; font-weight: 700; font-size: 0.92rem; overflow-wrap: anywhere; }
+.sy-file .f-name small { display: block; font-weight: 500; color: var(--muted); font-size: 0.72rem; margin-top: 3px; }
+.sy-file .f-act { display: flex; align-items: center; gap: 4px; flex: none; }
+.sy-file .f-act a, .sy-file .f-act button {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 12px; border-radius: var(--radius-full);
+  font-size: 0.8rem; font-weight: 700; color: var(--accent);
+  background: none; border: none; cursor: pointer; font-family: inherit;
+  transition: background var(--motion-fast), color var(--motion-fast);
+}
+.sy-file .f-act a:hover, .sy-file .f-act button:hover { background: rgba(47,143,224,0.09); }
+.sy-file .f-act .f-del { color: var(--muted); padding: 8px; }
+.sy-file .f-act .f-del:hover { color: var(--ink); background: rgba(20,30,43,0.06); }
+
+/* Week cards — calmer hover, accent-only highlight */
+.concept-syllabus .wk-card { border-radius: var(--radius); }
+.concept-syllabus .wk-card:hover {
+  border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow-2);
+}
+.concept-syllabus .wk-card.wk-cur { box-shadow: 0 0 0 2px var(--accent), var(--shadow-1); }
+.concept-syllabus .sem-progress .sp-fill { background: var(--accent); }
+.concept-syllabus .tt-legend { color: var(--muted); }
+.concept-syllabus .shelf-title { font-weight: 800; letter-spacing: -0.01em; }
+
+/* Timeline — hairline + icon nodes, one accent for every type */
+.concept-syllabus .tl-item { border-left-color: var(--line); padding: 13px 0 13px 32px; }
+.concept-syllabus .tl-item::before { display: none; }
+.sy-tl-ic {
+  position: absolute; left: -15px; top: 8px;
+  width: 28px; height: 28px; border-radius: var(--radius-full);
+  display: grid; place-items: center;
+  background: var(--card); border: 2px solid var(--accent); color: var(--accent);
+}
+.concept-syllabus .tl-break .sy-tl-ic { border-color: var(--muted); color: var(--muted); }
+.concept-syllabus .tl-item .date { color: var(--ink); }
+.concept-syllabus .tl-break .date, .concept-syllabus .tl-break .label { color: var(--muted); }
+
+@media (max-width: 640px) {
+  .concept-syllabus .hero { margin: 8px; border-radius: 20px; padding: 44px 18px 42px; }
+  .concept-syllabus .hero h1 { font-size: 2.5rem; }
+  .concept-syllabus .section { padding: 48px 0; }
+  .sy-proof span { padding: 2px 14px; }
+  .sy-stats { grid-template-columns: 1fr; }
+  .sy-stat { border-left: none; border-top: 1px solid var(--line); padding: 20px 22px; }
+  .sy-stat:first-child { border-top: none; }
+  .sy-file { flex-wrap: wrap; row-gap: 8px; }
+  .sy-file .f-name { flex: 1 1 calc(100% - 100px); }
+  .sy-file .f-act { margin-left: 54px; }
+}
+
+/* ---------- Preview index ---------- */
+.preview-list { display: grid; gap: 18px; max-width: 760px; }
+.preview-card {
+  display: block; background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); padding: 24px; color: var(--ink);
+  transition: transform var(--motion), box-shadow var(--motion);
+}
+.preview-card:hover { text-decoration: none; transform: translateY(-3px); box-shadow: var(--shadow-2); }
+.preview-card h3 { font-family: var(--font-display); font-size: var(--text-xl); margin-bottom: 6px; }
+.preview-card .sw { display: flex; gap: 6px; margin: 12px 0; }
+.preview-card .sw i { width: 28px; height: 28px; border-radius: var(--radius-sm); display: block; }
+.preview-card p { color: var(--muted); font-size: var(--text-sm); }
+.preview-card .go { color: var(--blue); font-weight: 700; font-size: var(--text-sm); }
+
+@media (max-width: 768px) {
+  .sr-stop { min-width: 44px; }
+  .sr-gap { min-width: 44px; }
+  .sr-card { padding: 16px; }
+}

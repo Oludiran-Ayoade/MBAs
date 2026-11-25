@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LCU MBA Notes Hub — First Semester 2026/2027</title>
+  <script>(function(){try{document.documentElement.dataset.theme=localStorage.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}catch(e){}})();</script>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0c2340">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..800;1,9..144,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <span class="logo">🎓</span>
+      <span>LCU MBA Notes Hub<small>Postgraduate College · Lead City University</small></span>
+    </a>
+    <nav class="site-nav">
+      <a href="index.html">Courses</a>
+      <a href="index.html#calendar">Calendar</a>
+      <a class="cta" href="upload.html">📤 Upload Notes</a>
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="kicker" id="weekNow">MBA · First Semester · 2026/2027</span>
+    <h1>Every lecture note,<br><em>beautifully explained.</em></h1>
+    <p>Pictorial study pages and downloadable lecture PDFs for the MBA first semester — organized week by week.</p>
+    <div class="search-wrap">
+      <span class="s-icon">🔎</span>
+      <input class="search-input" id="searchInput" type="search"
+             placeholder="Search courses, topics, uploaded notes…" autocomplete="off">
+      <div class="search-results" id="searchResults"></div>
+    </div>
+    <div class="sem-progress" id="semProgress"></div>
+    <div class="actions">
+      <a class="btn btn-primary" href="#courses">Browse Courses</a>
+      <a class="btn btn-ghost" href="upload.html">Share a Note</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="courses">
+  <div class="wrap">
+    <h2 class="section-title">Timetable</h2>
+    <p class="section-sub">Courses down the side, weeks across the top — tap a cell for that week's notes.</p>
+    <div id="timetable"></div>
+  </div>
+</section>
+
+<section class="section hidden" id="recentSection">
+  <div class="wrap">
+    <h2 class="section-title">Recently Uploaded</h2>
+    <p class="section-sub">The latest notes shared by your classmates.</p>
+    <div class="recent-grid" id="recentGrid"></div>
+  </div>
+</section>
+
+<section class="section" id="calendar">
+  <div class="wrap">
+    <h2 class="section-title">First Semester at a Glance</h2>
+    <p class="section-sub">Postgraduate College academic calendar, 2026/2027.</p>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  LCU MBA Notes Hub · Built by students, for students · Lead City University, Ibadan
+</footer>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/theme.js"></script>
+</body>
+</html>

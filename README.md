@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LCU MBA Notes Hub
 
-## Getting Started
+A Next.js (App Router + TypeScript) site for Lead City University MBA students
+to **view pictorial study pages** and **download lecture note PDFs** —
+8 courses, First Semester 2026/2027.
 
-First, run the development server:
+Features: light/dark theme toggle, global search, recently-uploaded feed,
+semester progress, per-course coverage, installable PWA (offline app shell),
+sticky note TOC with reading time and print-friendly pages.
+
+## Stack
+
+- **Next.js 16** (App Router, Turbopack) + **React 19** + **TypeScript**
+- Custom design system in `app/globals.css` (no Tailwind)
+- **marked** renders the pictorial markdown notes
+- **Cloudinary** unsigned uploads for student-submitted PDFs (no backend needed)
+
+## Commands
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev     # http://localhost:3000
+npm run build   # production build + typecheck
+npm run lint    # eslint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+app/                    routes — / (timetable), /course/[tag], /upload, /note/[tag]/[file]
+components/             client components (Timetable, SearchBox, CourseView, …)
+lib/data.ts             COURSES, WEEKS, TIMETABLE, Cloudinary helpers
+lib/config.ts           Cloudinary credentials  ← EDIT THIS
+public/notes/<tag>/*.md pictorial note pages (markdown + HTML blocks)
+public/manifest.json, sw.js, icon.svg   PWA
+_legacy/                the previous static-HTML version (safe to delete)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Cloudinary setup (one-time, ~5 min)
 
-## Learn More
+1. Sign up at [cloudinary.com](https://cloudinary.com) — note your **cloud name**.
+2. Settings → **Upload** → *Upload presets* → **Add upload preset** →
+   **Signing Mode: Unsigned** → copy the preset name.
+3. Settings → **Security** → **Resource list** → **Allowed**.
+4. Paste both values into `lib/config.ts`.
 
-To learn more about Next.js, take a look at the following resources:
+Uploads land in `mba-notes/<tag>/w<n>` and group by course + week automatically.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Enabling deletes (removing uploaded notes)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Deletes require a signed request with your **API secret**, which must stay
+server-side. Create `.env.local` in the project root:
 
-## Deploy on Vercel
+```
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Find these in Cloudinary → Dashboard (top of page). Without these, the 🗑
+button in the week popover will return an error.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Adding a pictorial page
+
+1. Write markdown in `public/notes/<tag>/your-topic.md`. Mix markdown with HTML —
+   `pic-grid`/`pic-card` for visual cards, `callout tip|warn|info` for highlight
+   boxes, inline `<svg>` for diagrams.
+2. Register it in `lib/data.ts` under the course's `notes` array, pinned to the
+   lecture week:
+   ```ts
+   { file: "your-topic", week: 3, title: "Your Topic", desc: "Short summary." }
+   ```
+
+Tip: paste a lecture PDF's text into an AI chat and ask for "pictorial markdown
+study notes using pic-card and callout blocks".
+
+## Lecture weeks
+
+`lib/data.ts` → `WEEKS`: 14 lecture weeks, Week 1 = Oct 26–Nov 1 (lectures
+actually began the last week of October) through Week 14 = Feb 15–25.
+The Christmas break is excluded. `TIMETABLE` maps weeks → course tags
+(default: all courses every week — edit to match the real lecture schedule).
+
+## Deploy
+
+Push to GitHub → import into Vercel (free). PWA install needs HTTPS.

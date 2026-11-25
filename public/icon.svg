@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#0c2340"/>
+  <circle cx="256" cy="256" r="168" fill="#2f8fe0"/>
+  <!-- mortarboard -->
+  <path d="M256 168 120 226l136 58 102-43.6V296h28V226L256 168z" fill="#ffffff"/>
+  <path d="M178 260v58c0 26 35 46 78 46s78-20 78-46v-58l-78 33.2L178 260z" fill="#0c2340" opacity="0.85"/>
+  <circle cx="386" cy="330" r="10" fill="#ffffff"/>
+  <rect x="379" y="298" width="14" height="34" rx="7" fill="#ffffff"/>
+</svg>

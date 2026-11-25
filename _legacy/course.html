@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course — LCU MBA Notes Hub</title>
+  <script>(function(){try{document.documentElement.dataset.theme=localStorage.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}catch(e){}})();</script>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0c2340">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..800;1,9..144,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <span class="logo">🎓</span>
+      <span>LCU MBA Notes Hub<small>Postgraduate College · Lead City University</small></span>
+    </a>
+    <nav class="site-nav">
+      <a href="index.html">Courses</a>
+      <a class="cta" href="upload.html">📤 Upload Notes</a>
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+    </nav>
+  </div>
+</header>
+
+<section class="course-hero" id="courseHero">
+  <div class="wrap">
+    <span class="code" id="courseCode"></span>
+    <h1 id="courseTitle">Course</h1>
+    <p id="courseDesc"></p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="breadcrumb"><a href="index.html">← All courses</a></div>
+  <div class="coverage" id="coverage"></div>
+  <div id="pdfStatus"></div>
+  <div id="weekList" style="margin:20px 0 50px;"></div>
+</main>
+
+<footer class="site-footer">
+  LCU MBA Notes Hub · Built by students, for students · Lead City University, Ibadan
+</footer>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/course.js"></script>
+<script src="assets/js/theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "LCU MBA Notes Hub",
+  "short_name": "MBA Notes",
+  "description": "Course notes and pictorial study pages — Lead City University MBA, First Semester 2026/2027",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0c2340",
+  "theme_color": "#0c2340",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
