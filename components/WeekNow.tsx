@@ -10,5 +10,5 @@ export default function WeekNow() {
     const cur = currentWeek();
     if (cur?.n) setLabel(`Week ${cur.n} · ${cur.label} · MBA First Semester 2026/2027`);
   }, []);
-  return <span className="kicker"><CalendarBlank size={13} weight="bold" /> {label}</span>;
+  return <span className="kicker"><CalendarBlank size={16} weight="bold" /> {label}</span>;
 }

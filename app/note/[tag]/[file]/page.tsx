@@ -8,7 +8,13 @@ async function Resolved({ params }: { params: Promise<{ tag: string; file: strin
 
 export default function NotePage({ params }: { params: Promise<{ tag: string; file: string }> }) {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={
+      <div className="wrap section">
+        <div className="upload-card" aria-hidden>
+          <div className="skel-lines"><i /><i /><i /></div>
+        </div>
+      </div>
+    }>
       <Resolved params={params} />
     </Suspense>
   );
