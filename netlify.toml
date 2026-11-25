@@ -1,0 +1,5 @@
+[build.environment]
+  # The Cloudinary cloud name is a public identifier: it appears in every
+  # res.cloudinary.com asset URL and is required client-side for unsigned
+  # uploads. CLOUDINARY_API_KEY / CLOUDINARY_API_SECRET remain scanned.
+  SECRETS_SCAN_OMIT_KEYS = "CLOUDINARY_CLOUD_NAME"
