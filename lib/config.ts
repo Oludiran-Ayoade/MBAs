@@ -4,7 +4,7 @@
 // 3. Enable "Resource list" (Settings → Security)
 // 4. Paste your values below
 export const CONFIG = {
-  CLOUD_NAME: "desk7uuna",
+  CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "desk7uuna",
   UPLOAD_PRESET: "mba_notes_unsigned"
 };
 
