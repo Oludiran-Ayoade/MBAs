@@ -357,7 +357,7 @@ export default function CourseView({ tag }: { tag: string }) {
                     </Link>
                   ))}
                   {activeFiles.map(uploadRow)}
-                  <QuickUpload kind="week" week={activeW.n!} courseTag={course.tag} existing={existingKeys} compact onUploaded={addRes} />
+                  <QuickUpload kind="week" week={activeW.n!} courseTag={course.tag} existing={existingKeys} onUploaded={addRes} />
                 </>
               ) : (
                 <div className="wk-empty">

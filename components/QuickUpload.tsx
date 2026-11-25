@@ -13,13 +13,12 @@ const OK_EXT = /\.(pdf|pptx?|docx?|png|jpe?g)$/i;
 
 // Compact inline uploader — Past Questions, Likely Questions or a lecture
 // week. Files go straight to Cloudinary on select or drop, no page navigation.
-export default function QuickUpload({ kind, week, courseTag, existing, onUploaded, compact }: {
+export default function QuickUpload({ kind, week, courseTag, existing, onUploaded }: {
   kind: "pq" | "lq" | "week";
   week?: number;
   courseTag: string;
   existing: Set<string>;
   onUploaded: (r: CloudResource) => void;
-  compact?: boolean;
 }) {
   const [items, setItems] = useState<Item[]>([]);
   const [drag, setDrag] = useState(false);
@@ -100,7 +99,7 @@ export default function QuickUpload({ kind, week, courseTag, existing, onUploade
   return (
     <div className="qu">
       <div
-        className={`qu-zone${drag ? " drag" : ""}${compact ? " compact" : ""}`}
+        className={`qu-zone${drag ? " drag" : ""}`}
         role="button"
         tabIndex={0}
         onClick={() => inputRef.current?.click()}
@@ -109,9 +108,8 @@ export default function QuickUpload({ kind, week, courseTag, existing, onUploade
         onDragLeave={() => setDrag(false)}
         onDrop={e => { e.preventDefault(); setDrag(false); addFiles(Array.from(e.dataTransfer.files)); }}
       >
-        <span className="qu-ic"><UploadSimple size={compact ? 15 : 22} /></span>
-        Drop files {compact ? "or" : "here or"} <b>click to upload</b>
-        <small>{kind === "week" ? `goes straight to Week ${week}` : kind === "pq" ? "goes straight to Past Questions" : "goes straight to Likely & Tutorial Questions"}</small>
+        <span className="qu-ic"><UploadSimple size={15} /></span>
+        <span>Drop files or <b>click to upload</b> <small>· {kind === "week" ? `goes to Week ${week}` : kind === "pq" ? "goes to Past Questions" : "goes to Likely & Tutorial Questions"}</small></span>
       </div>
       <input
         ref={inputRef}

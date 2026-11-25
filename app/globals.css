@@ -847,13 +847,13 @@ html[data-theme="dark"] .notice { background: rgba(217,180,92,0.1); border-color
 /* QuickUpload — inline dropzone inside PQ/LQ sections */
 .qu { margin-top: 14px; }
 .qu-zone {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  padding: 18px 16px; border: 1.5px dashed color-mix(in srgb, var(--blue) 35%, var(--line));
-  border-radius: var(--radius); background: color-mix(in srgb, var(--blue) 4%, var(--card));
-  color: var(--muted); font-size: var(--text-sm); cursor: pointer; text-align: center;
+  display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 9px;
+  padding: 10px 14px; border: 1.5px dashed color-mix(in srgb, var(--blue) 30%, var(--line));
+  border-radius: var(--radius-sm); background: color-mix(in srgb, var(--blue) 3%, var(--card));
+  color: var(--muted); font-size: var(--text-xs); cursor: pointer; text-align: center;
   transition: border-color var(--motion-fast), background var(--motion-fast), color var(--motion-fast);
 }
-.qu-zone small { font-size: var(--text-xs); opacity: 0.8; }
+.qu-zone small { font-size: inherit; opacity: 0.75; }
 .qu-zone b { color: var(--blue); }
 .qu-zone:hover, .qu-zone.drag { border-color: var(--blue); color: var(--ink); background: color-mix(in srgb, var(--blue) 8%, var(--card)); }
 .lq-section .qu-zone { border-color: color-mix(in srgb, var(--purple) 35%, var(--line)); background: color-mix(in srgb, var(--purple) 4%, var(--card)); }
@@ -1225,11 +1225,6 @@ html[data-theme="dark"] .course-hero-frame {
   border-bottom: 1px solid var(--line); margin-bottom: 8px;
 }
 
-.qu-zone.compact {
-  flex-direction: row; gap: 9px; justify-content: center;
-  padding: 10px 14px; margin-top: 14px; font-size: var(--text-xs);
-}
-.qu-zone.compact small { display: none; }
 .wk-empty .qu { margin-top: 12px; width: 100%; max-width: 420px; }
 
 .exam-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
