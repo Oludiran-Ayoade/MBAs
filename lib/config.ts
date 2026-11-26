@@ -10,3 +10,7 @@ export const CONFIG = {
 
 export const cloudinaryConfigured =
   !CONFIG.CLOUD_NAME.startsWith("YOUR_") && !CONFIG.UPLOAD_PRESET.startsWith("YOUR_");
+
+// Cloudinary free-plan asset cap (verified: enforced on total asset size,
+// so chunked uploads cannot bypass it). Preflight reject with a clear message.
+export const MAX_UPLOAD_BYTES = 10485760; // 10 MiB

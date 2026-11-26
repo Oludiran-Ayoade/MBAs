@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { nameKey, type CloudResource } from "@/lib/data";
-import { CONFIG } from "@/lib/config";
+import { CONFIG, MAX_UPLOAD_BYTES } from "@/lib/config";
 import { CheckCircle, SpinnerGap, UploadSimple, WarningCircle } from "@/components/Icons";
 
 type Status = "uploading" | "done" | "err" | "dupe";
@@ -61,6 +61,7 @@ export default function QuickUpload({ kind, week, courseTag, existing, onUploade
         }
         let detail = xhr.statusText || "upload failed";
         try { detail = JSON.parse(xhr.responseText).error?.message || detail; } catch {}
+        if (/file size too large|maximum is/i.test(detail)) detail = "too large — max 10 MB";
         setItems(q => q.map(i => i.id === item.id ? { ...i, status: "err", err: detail } : i));
         resolve(null);
       };
@@ -78,6 +79,10 @@ export default function QuickUpload({ kind, week, courseTag, existing, onUploade
     for (const file of good) {
       const key = nameKey(file.name);
       const item: Item = { id: nextId++, name: file.name, size: file.size, pct: 0, status: "uploading" };
+      if (file.size > MAX_UPLOAD_BYTES) {
+        setItems(q => [...q, { ...item, status: "err", err: "too large — max 10 MB" }]);
+        continue;
+      }
       if (existing.has(key) || inFlight.current.has(key)) {
         setItems(q => [...q, { ...item, status: "dupe", err: "already uploaded" }]);
         continue;

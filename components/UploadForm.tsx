@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { COURSES, WEEKS, getCourse, currentWeek, fetchTag, nameKey, type CloudResource } from "@/lib/data";
-import { CONFIG, cloudinaryConfigured } from "@/lib/config";
+import { CONFIG, cloudinaryConfigured, MAX_UPLOAD_BYTES } from "@/lib/config";
 import { CheckCircle, FileText, Notebook, Paperclip, SpinnerGap, Target, WarningCircle } from "@/components/Icons";
 import { CourseIcon } from "@/components/Icons";
 
@@ -69,13 +69,18 @@ export default function UploadForm() {
         .filter(f => !seen.has(f.name + f.size + dest))
         .map(f => ({
           id: nextId++, file: f, week: dest, pct: 0,
-          status: existing.has(nameKey(f.name)) ? "dupe" as Status : "pending" as Status
+          status: f.size > MAX_UPLOAD_BYTES ? "err" as Status
+            : existing.has(nameKey(f.name)) ? "dupe" as Status : "pending" as Status,
+          err: f.size > MAX_UPLOAD_BYTES ? "too large — max 10 MB, compress or split the file" : undefined
         }))];
     });
     setMsg(null);
   }
 
   function uploadOne(item: QItem): Promise<{ ok: boolean; err?: string }> {
+    if (item.file.size > MAX_UPLOAD_BYTES) {
+      return Promise.resolve({ ok: false, err: "too large — max 10 MB, compress or split the file" });
+    }
     return new Promise(resolve => {
       const fd = new FormData();
       fd.append("file", item.file);
@@ -104,6 +109,7 @@ export default function UploadForm() {
         else {
           let detail = xhr.statusText;
           try { detail = JSON.parse(xhr.responseText).error?.message || detail; } catch {}
+          if (/file size too large|maximum is/i.test(detail)) detail = "too large — max 10 MB, compress or split the file";
           resolve({ ok: false, err: detail });
         }
       };
