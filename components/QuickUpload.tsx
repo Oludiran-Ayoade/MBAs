@@ -5,7 +5,7 @@ import { nameKey, type CloudResource } from "@/lib/data";
 import { CONFIG, MAX_UPLOAD_BYTES } from "@/lib/config";
 import { CheckCircle, SpinnerGap, UploadSimple, WarningCircle } from "@/components/Icons";
 
-type Status = "uploading" | "done" | "err" | "dupe";
+type Status = "compressing" | "uploading" | "done" | "err" | "dupe";
 interface Item { id: number; name: string; size: number; pct: number; status: Status; err?: string }
 
 let nextId = 1;
@@ -27,7 +27,26 @@ export default function QuickUpload({ kind, week, courseTag, existing, onUploade
   const tagKind = kind === "week" ? `w${week}` : kind;
   const folder = kind === "week" ? `mba-notes/${courseTag}/w${week}` : `mba-notes/${courseTag}/${kind === "pq" ? "past-questions" : "likely-questions"}`;
 
-  function uploadOne(item: Item, file: File) {
+  async function uploadOne(item: Item, file: File) {
+    // Oversized PDFs get compressed in-browser first (rasterized to JPEG
+    // pages) - Cloudinary's free plan caps assets at 10MB.
+    if (file.size > MAX_UPLOAD_BYTES && /\.pdf$/i.test(file.name)) {
+      setItems(q => q.map(i => i.id === item.id ? { ...i, status: "compressing" } : i));
+      try {
+        const { compressPdf } = await import("@/lib/compressPdf");
+        file = await compressPdf(file, p =>
+          setItems(q => q.map(i => i.id === item.id ? { ...i, pct: (p.page / p.pages) * 100 } : i)));
+      } catch (e) {
+        setItems(q => q.map(i => i.id === item.id
+          ? { ...i, status: "err", err: e instanceof Error ? e.message : "compression failed" } : i));
+        return null;
+      }
+    }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setItems(q => q.map(i => i.id === item.id ? { ...i, status: "err", err: "too large — max 10 MB" } : i));
+      return null;
+    }
+    setItems(q => q.map(i => i.id === item.id ? { ...i, status: "uploading", pct: 0 } : i));
     return new Promise<CloudResource | null>(resolve => {
       const fd = new FormData();
       fd.append("file", file);
@@ -79,8 +98,8 @@ export default function QuickUpload({ kind, week, courseTag, existing, onUploade
     for (const file of good) {
       const key = nameKey(file.name);
       const item: Item = { id: nextId++, name: file.name, size: file.size, pct: 0, status: "uploading" };
-      if (file.size > MAX_UPLOAD_BYTES) {
-        setItems(q => [...q, { ...item, status: "err", err: "too large — max 10 MB" }]);
+      if (file.size > MAX_UPLOAD_BYTES && !/\.pdf$/i.test(file.name)) {
+        setItems(q => [...q, { ...item, status: "err", err: "too large — max 10 MB (only PDFs compress)" }]);
         continue;
       }
       if (existing.has(key) || inFlight.current.has(key)) {
@@ -131,12 +150,13 @@ export default function QuickUpload({ kind, week, courseTag, existing, onUploade
               <span className="qu-ic">
                 {i.status === "done" ? <CheckCircle size={16} weight="fill" />
                   : i.status === "err" || i.status === "dupe" ? <WarningCircle size={16} weight="fill" />
-                  : <SpinnerGap size={16} className="spin" />}
+                  : <SpinnerGap size={16} className="spin" /> }
               </span>
               <span className="qu-name">
                 {i.name}
                 <small>
-                  {i.status === "uploading" && `uploading ${Math.round(i.pct)}%`}
+                  {i.status === "compressing" && `compressing ${Math.round(i.pct)}%`}
+              {i.status === "uploading" && `uploading ${Math.round(i.pct)}%`}
                   {i.status === "err" && (i.err || "failed")}
                   {i.status === "dupe" && "already uploaded"}
                   {i.status === "done" && "added to the list"}

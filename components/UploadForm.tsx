@@ -7,7 +7,7 @@ import { CONFIG, cloudinaryConfigured, MAX_UPLOAD_BYTES } from "@/lib/config";
 import { CheckCircle, FileText, Notebook, Paperclip, SpinnerGap, Target, WarningCircle } from "@/components/Icons";
 import { CourseIcon } from "@/components/Icons";
 
-type Status = "pending" | "uploading" | "done" | "err" | "dupe";
+type Status = "pending" | "compressing" | "uploading" | "done" | "err" | "dupe";
 interface QItem { id: number; file: File; week: string; pct: number; status: Status; err?: string }
 
 let nextId = 1;
@@ -54,7 +54,7 @@ export default function UploadForm() {
 
   const lectWeeks = WEEKS.filter(w => w.n);
   const pending = queue.filter(i => i.status === "pending");
-  const uploading = queue.find(i => i.status === "uploading");
+  const uploading = queue.find(i => i.status === "uploading" || i.status === "compressing");
 
   function addFiles(list: File[]) {
     const good = list.filter(f => OK_EXT.test(f.name));
@@ -69,21 +69,21 @@ export default function UploadForm() {
         .filter(f => !seen.has(f.name + f.size + dest))
         .map(f => ({
           id: nextId++, file: f, week: dest, pct: 0,
-          status: f.size > MAX_UPLOAD_BYTES ? "err" as Status
+          status: f.size > MAX_UPLOAD_BYTES && !/\.pdf$/i.test(f.name) ? "err" as Status
             : existing.has(nameKey(f.name)) ? "dupe" as Status : "pending" as Status,
-          err: f.size > MAX_UPLOAD_BYTES ? "too large — max 10 MB, compress or split the file" : undefined
+          err: f.size > MAX_UPLOAD_BYTES && !/\.pdf$/i.test(f.name) ? "too large — max 10 MB (only PDFs can be auto-compressed)" : undefined
         }))];
     });
     setMsg(null);
   }
 
-  function uploadOne(item: QItem): Promise<{ ok: boolean; err?: string }> {
-    if (item.file.size > MAX_UPLOAD_BYTES) {
-      return Promise.resolve({ ok: false, err: "too large — max 10 MB, compress or split the file" });
+  function uploadOne(item: QItem, file: File): Promise<{ ok: boolean; err?: string }> {
+    if (file.size > MAX_UPLOAD_BYTES) {
+      return Promise.resolve({ ok: false, err: "too large — max 10 MB" });
     }
     return new Promise(resolve => {
       const fd = new FormData();
-      fd.append("file", item.file);
+      fd.append("file", file);
       fd.append("upload_preset", CONFIG.UPLOAD_PRESET);
       if (item.week === "pq") {
         fd.append("tags", `mba,${course.tag},pq`);
@@ -125,8 +125,21 @@ export default function UploadForm() {
     setMsg(null);
     let ok = 0, bad = 0;
     for (const item of todo) {
-      setQueue(q => q.map(i => i.id === item.id ? { ...i, status: "uploading" } : i));
-      const res = await uploadOne(item);
+      let file = item.file;
+      if (file.size > MAX_UPLOAD_BYTES && /\.pdf$/i.test(file.name)) {
+        setQueue(q => q.map(i => i.id === item.id ? { ...i, status: "compressing", pct: 0 } : i));
+        try {
+          const { compressPdf } = await import("@/lib/compressPdf");
+          file = await compressPdf(file, p =>
+            setQueue(q => q.map(i => i.id === item.id ? { ...i, pct: (p.page / p.pages) * 100 } : i)));
+        } catch (e) {
+          setQueue(q => q.map(i => i.id === item.id ? { ...i, status: "err", err: e instanceof Error ? e.message : "compression failed" } : i));
+          bad++;
+          continue;
+        }
+      }
+      setQueue(q => q.map(i => i.id === item.id ? { ...i, status: "uploading", pct: 0 } : i));
+      const res = await uploadOne(item, file);
       if (res.ok) setExisting(s => new Set(s).add(nameKey(item.file.name)));
       setQueue(q => q.map(i => i.id === item.id
         ? { ...i, status: res.ok ? "done" : "err", err: res.err, pct: res.ok ? 100 : i.pct }
@@ -201,20 +214,21 @@ export default function UploadForm() {
                   <span className="dz-ic">
                     {i.status === "done" ? <CheckCircle size={16} weight="fill" />
                       : i.status === "err" || i.status === "dupe" ? <WarningCircle size={16} weight="fill" />
-                      : i.status === "uploading" ? <SpinnerGap size={16} className="spin" />
+                      : i.status === "uploading" || i.status === "compressing" ? <SpinnerGap size={16} className="spin" />
                       : <FileText size={16} />}
                   </span>
                   <span className="dz-name">
                     {i.file.name}
                     <small>
                       {(i.file.size / 1048576).toFixed(2)} MB
+                      {i.status === "compressing" && ` · compressing ${Math.round(i.pct)}%`}
                       {i.status === "uploading" && ` · uploading ${Math.round(i.pct)}%`}
                       {i.status === "err" && i.err ? ` · ${i.err}` : ""}
                       {i.status === "dupe" && " · already uploaded, skipped"}
                     </small>
                   </span>
                   <span className="dz-wk">{i.week === "pq" ? "PQ" : i.week === "lq" ? "LQ" : `W${i.week}`}</span>
-                  {i.status !== "uploading" && (
+                  {i.status !== "uploading" && i.status !== "compressing" && (
                     <button
                       type="button"
                       className="dz-x"
